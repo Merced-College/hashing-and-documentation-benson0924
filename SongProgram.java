@@ -7,10 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.HashMap;
+
 
 public class SongProgram {
 
@@ -19,7 +16,7 @@ public class SongProgram {
 
     // Constructor
     public SongProgram() {
-        songMap = new HashMap<>();
+        songMap = new HashMap<>();//innitialize the hashmap(初始化hashmap)
     }
 
     // Method to load songs from a CSV file
@@ -32,7 +29,7 @@ public class SongProgram {
             
             while ((line = br.readLine()) != null) {
             	
-            	//System.out.println(line);//for testing
+            	//System.out.println(line);//for testing(測試用，非必要)
                 // Create a SongRecord from the line and add it to the map
                 SongRecord song = new SongRecord(line);
                 songMap.put(song.getId(), song);
@@ -40,7 +37,7 @@ public class SongProgram {
             System.out.println("Songs successfully loaded from CSV.");
         } catch (IOException e) {
             System.err.println("Error reading CSV file: " + e.getMessage());
-        }
+        }// to catch the error situation
     }
 
     // Method to retrieve a SongRecord by ID
@@ -53,85 +50,62 @@ public class SongProgram {
         for (SongRecord song : songMap.values()) {
             System.out.println(song);
         }
-    }
+    }//this si a for-each loop, first, scan the whole hashmap
     
     // GUI method to search for a song by ID
     public void openSearchGui() {
-        // Create the main frame
-        JFrame frame = new JFrame("Song Lookup");
-        frame.setSize(400, 200);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        // Create a panel to hold input and button
-        JPanel panel = new JPanel();
-        panel.setLayout(new FlowLayout());
-
-        // Label, Text Field, and Button
-        JLabel label = new JLabel("Enter Song ID:");
-        JTextField idField = new JTextField(20);
-        JButton searchButton = new JButton("Search");
-
-        // Add label, text field, and button to panel
-        panel.add(label);
-        panel.add(idField);
-        panel.add(searchButton);
-
-        // Result area to display song details
-        JTextArea resultArea = new JTextArea(5, 30);
-        resultArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(resultArea);
-        panel.add(scrollPane);
-
-        // Add action listener for the search button
-        searchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String id = idField.getText();
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Song Lookup");
+            frame.setSize(650, 450);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    
+            JPanel panel = new JPanel(new FlowLayout());
+            JLabel label = new JLabel("Enter Song ID:");
+            JTextField idField = new JTextField(20);
+            JButton searchButton = new JButton("Search");
+            JTextArea resultArea = new JTextArea(20, 50);
+            resultArea.setEditable(false);
+            JScrollPane scrollPane = new JScrollPane(resultArea);
+    
+            panel.add(label);
+            panel.add(idField);
+            panel.add(searchButton);
+            panel.add(scrollPane);
+    
+            searchButton.addActionListener(e -> {
+                String id = idField.getText().trim();
+                if (id.isEmpty()) {
+                    resultArea.setText("Please enter a valid Song ID.");
+                    return;
+                }
                 SongRecord song = getSongById(id);
                 if (song != null) {
                     resultArea.setText("Song Found:\n" + song.toString());
                 } else {
                     resultArea.setText("Song with ID " + id + " not found.");
                 }
-            }
+            });
+    
+            frame.add(panel);
+            frame.setVisible(true);
         });
-
-        // Add panel to frame
-        frame.add(panel);
-        frame.setVisible(true);
     }
 
     // Main method to demonstrate functionality and open GUI
-    public static void main2(String[] args) {
-        SongProgram program = new SongProgram();
-
-        // Load songs from a CSV file
-        String filePath = "data.csv";  // replace with actual file path
-        program.loadSongsFromCSV(filePath);
-
-        // Open GUI for searching songs by ID
-        program.openSearchGui();
-    }
+   
 
     // Main method to demonstrate functionality
     public static void main(String[] args) {
         SongProgram program = new SongProgram();
-
-        // Load songs from a CSV file
-        String filePath = "data.csv";  // replace with actual file path
+        
+        // 載入CSV檔案(load CVS file)
+        String filePath = "/Users/benson/Downloads/hashingAndDocumentation/data.csv";
         program.loadSongsFromCSV(filePath);
-
-        // Demonstrate retrieving a song by ID
-        String testId = "4BJqT0PrAfrxzMOxytFOIz";  // replace with an actual ID from your file
-        SongRecord song = program.getSongById(testId);
-        if (song != null) {
-            System.out.println("Retrieved song: " + song);
-        } else {
-            System.out.println("Song with ID " + testId + " not found.");
-        }
-
-        // Print all songs
-        program.printAllSongs();
+        
+        // 啟動GUI介面(open GUI)
+        program.openSearchGui();
     }
 }
 
+/*I'm not sure what should we do for this assignment,
+ so I ust change the GUI size and add some Chinese to help me understand those code.*/
